@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chromeOptions
 from selenium.webdriver.firefox.options import Options as firefoxOptions
+from selenium.webdriver.support.ui import WebDriverWait
 import time
 import pytest
 
@@ -20,17 +21,17 @@ def browser(request):  # collecting initial options for selenium driver(browser)
         options.add_experimental_option("prefs", {"intl.accept_languages": userLanguage})
         options.add_argument("--start-maximized")
 #        options.add_argument("--headless")
-        sDriver = webdriver.Chrome(options=options)
+        webDriver = webdriver.Chrome(options=options)
     elif browserName == "firefox":
         options = firefoxOptions()
         options.set_preference("intl.accept_languages", userLanguage)
-        sDriver = webdriver.Firefox(options=options)
+        webDriver = webdriver.Firefox(options=options)
 
-    sDriver.maximize_window()
-    sDriver.implicitly_wait(1)
-    yield sDriver
+    webDriver.maximize_window()
+    webDriver.implicitly_wait(1)
+    yield webDriver
 
     time.sleep(5)
     print("Tests ending")
-    sDriver.quit()
+    webDriver.quit()
 
