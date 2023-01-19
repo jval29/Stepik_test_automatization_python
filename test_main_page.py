@@ -2,11 +2,7 @@ from selenium.webdriver.common.by import By
 import time
 import pytest
 from .Pages.main_page import MainPage
-
-
-def go_to_login_page(browser):
-    login_link = browser.find_element(By.CSS_SELECTOR, "#login_link")
-    login_link.click()
+from .Pages.login_page import LoginPage
 
 
 @pytest.mark.usefixtures("browser")
@@ -23,3 +19,8 @@ class TestSuit:
         page = MainPage(browser, link)
         page.open()
         page.go_to_login_page()
+
+    def test_should_be_login_page(self, browser):
+        link = browser.current_url
+        page = LoginPage(browser, link)
+        page.should_be_login_page()
