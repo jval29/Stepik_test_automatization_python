@@ -10,18 +10,21 @@ import pytest
 def pytest_addoption(parser):
     parser.addoption("--browser_name", action="store", default="chrome", help="choose browser name")
     parser.addoption("--language", action="store", default="en", help="choose the language: en / ru / de ....etc")
+    parser.addoption("--headless", action="store", default="off", help="turn on / off browser UI")
 
 
 @pytest.fixture(scope="class")
 def browser(request):  # collecting initial options for selenium driver(browser)
     browserName = request.config.getoption("browser_name").lower().strip()
     userLanguage = request.config.getoption("language").lower().strip()
+    headlessOption = request.config.getoption("headless").lower().strip()
 
     if browserName == "chrome" or browserName != "firefox":
         options = chromeOptions()
         options.add_experimental_option("prefs", {"intl.accept_languages": userLanguage})
         options.add_argument("--start-maximized")
-#        options.add_argument("--headless")
+        if headlessOption == "on":
+            options.add_argument("--headless")
         webDriver = webdriver.Chrome(options=options)
     elif browserName == "firefox":
         options = firefoxOptions()
