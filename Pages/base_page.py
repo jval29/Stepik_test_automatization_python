@@ -17,9 +17,13 @@ class BasePage():
         self.browser.implicitly_wait(timeout)
         self.actChain = ActionChains(browser)
 
-    def go_to_login_page(self):
-        login_link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
-        login_link.click()
+    def go_to_login_page(self, wait=1):
+        loginLink = self.wait_element(*BasePageLocators.LOGIN_LINK, wait)
+        self.move_n_click(loginLink)
+
+    def go_to_basket_page(self, wait=1):
+        cartLink = self.wait_element(*BasePageLocators.CART_LINK, wait)
+        self.move_n_click(cartLink)
 
     def is_element_present(self, by, locator, wait=1):
         try:

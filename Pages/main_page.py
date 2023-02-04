@@ -5,4 +5,4 @@ from .locators import MainPageLocators
 
 class MainPage(BasePage):
     def __init__(self, *args, **kwargs):
-        super(MainPage).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)

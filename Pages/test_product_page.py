@@ -1,6 +1,7 @@
 import pytest
 from .product_page import ProductPage, ProductPageLocators
 from .login_page import LoginPage, LoginPageLocators
+from .basket_page import BasketPage, BasketPageLocators
 import time
 import re
 
@@ -85,3 +86,14 @@ class TestSuit():
         page.go_to_login_page()
         page = LoginPage(browser, browser.current_url)
         page.should_be_login_page()
+
+    @pytest.mark.new
+    def test_guest_cant_see_product_in_basket_opened_from_product_page(self, browser):
+        url = "http://selenium1py.pythonanywhere.com/"
+        page = ProductPage(browser, url)
+        page.open()
+        page.go_to_basket_page()
+        page = BasketPage(browser, browser.current_url)
+        page.should_be_basket_url()
+        page.basket_should_be_empty()
+        page.should_be_empty_basket_message()
