@@ -1,4 +1,3 @@
-from selenium.webdriver.common.by import By
 import time
 import pytest
 from .Pages.main_page import MainPage, MainPageLocators

@@ -1,5 +1,3 @@
-import pytest
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,37 +15,37 @@ class BasePage():
         self.browser.implicitly_wait(timeout)
         self.actChain = ActionChains(browser)
 
-    def go_to_login_page(self, wait=1):
-        loginLink = self.wait_element(*BasePageLocators.LOGIN_LINK, wait)
+    def base_check(self, requiredCondition, message="There is no required condition"):
+        assert requiredCondition, message
+
+    def go_to_login_page(self, timeout=1):
+        loginLink = self.wait_element(*BasePageLocators.LOGIN_LINK, timeout)
         self.move_n_click(loginLink)
 
-    def go_to_basket_page(self, wait=1):
-        cartLink = self.wait_element(*BasePageLocators.CART_LINK, wait)
+    def go_to_basket_page(self, timeout=1):
+        cartLink = self.wait_element(*BasePageLocators.CART_LINK, timeout)
         self.move_n_click(cartLink)
 
-    def is_element_present(self, by, locator, message="Element is not present", wait=1):
+    def is_element_present(self, by, locator, timeout=1):
         try:
-            self.wait_element(by, locator, wait)
+            self.wait_element(by, locator, timeout)
             return True
         except (TimeoutException, NoSuchElementException):
-            print(message)
             return False
 
-    def is_not_element_present(self, by, locator, message="Element is still present", wait=1):
+    def is_not_element_present(self, by, locator, timeout=1):
         try:
-            self.wait_element(by, locator, wait)
+            self.wait_element(by, locator, timeout)
             return False
         except (TimeoutException, NoSuchElementException):
-            print(message)
             return True
 
-    def is_disappeared(self, by, locator, message="Element is not disappeared", wait=1):
+    def is_disappeared(self, by, locator, timeout=1):
         try:
-            WebDriverWait(self.browser, wait, 0.5, TimeoutException).until_not(
+            WebDriverWait(self.browser, timeout, 0.5, TimeoutException).until_not(
                 expCond.presence_of_element_located((by, locator)))
             return True
         except TimeoutException:
-            print(message)
             return False
 
     def open(self):
@@ -85,8 +83,8 @@ class BasePage():
             self.actChain.key_down(symbol).pause(0.02).key_up(symbol)
             self.actChain.perform()
 
-    def wait_element(self, by, locator, wait=1):
-        element = WebDriverWait(self.browser, wait).until(expCond.presence_of_element_located((by, locator)))
+    def wait_element(self, by, locator, timeout=1):
+        element = WebDriverWait(self.browser, timeout).until(expCond.presence_of_element_located((by, locator)))
         return element
 
 

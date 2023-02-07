@@ -15,8 +15,8 @@ class ProductPage(BasePage):
         message = self.wait_element(*ProductPageLocators.SUCCESS_MESSAGE)
         assert message.text.lower() == f"{productName} has been added to your basket.", "Text message doesn't compare"
 
-    def should_not_be_success_message(self, wait):
-        message = self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, wait)
+    def should_not_be_success_message(self, timeout):
+        message = self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, timeout)
         assert message, "Success message is present"
 
     def should_be_equal_amount_in_cart(self, productPrice, lastAmount):

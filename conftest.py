@@ -1,8 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chromeOptions
 from selenium.webdriver.firefox.options import Options as firefoxOptions
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as expCond
 import time
 import pytest
 
@@ -35,6 +33,6 @@ def browser(request):  # collecting initial options for selenium driver(browser)
     yield webDriver
 
     time.sleep(1)
-    print("Tests ending")
+    print("\nTests ending")
     webDriver.quit()
 

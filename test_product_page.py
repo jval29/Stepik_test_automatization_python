@@ -8,14 +8,14 @@ import re
 
 urls = [
     "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
     pytest.param(
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
+        "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
         marks=pytest.mark.xfail(reason="No promo code available")),
     "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8"
 ]
@@ -24,7 +24,7 @@ urls = [
 @pytest.mark.usefixtures("browser")
 class TestBasket():
 
-    # @pytest.mark.skip()
+    @pytest.mark.need_review
     @pytest.mark.parametrize("url", urls)
     def test_guest_can_add_product_to_basket(self, browser, url):
         page = ProductPage(browser, url)
@@ -52,7 +52,8 @@ class TestBasket():
         page = ProductPage(browser, url)
         page.open()
         page.add_to_cart()
-        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "Success message is present"
+        page.base_check(page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1),
+                        "Success message is still present")
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -60,7 +61,8 @@ class TestBasket():
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
-        page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, "Success message is still present", 1)
+        page.base_check(page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1),
+                        "Success message is still present")
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -70,7 +72,8 @@ class TestBasket():
         page = ProductPage(browser, url)
         page.open()
         page.add_to_cart()
-        page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE, "Success message is present", 4)
+        page.base_check(page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE, 4),
+                        "Success message is not disappeared")
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -83,6 +86,7 @@ class TestLoginFromProductPage():
         page.open()
         page.should_be_login_link()
 
+    @pytest.mark.need_review
     def test_guest_can_go_to_login_page_from_product_page(self, browser):
         url = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
         page = ProductPage(browser, url)
@@ -94,6 +98,8 @@ class TestLoginFromProductPage():
 
 @pytest.mark.usefixtures("browser")
 class TestBasketFromProductPage():
+
+    @pytest.mark.need_review
     def test_guest_cant_see_product_in_basket_opened_from_product_page(self, browser):
         url = "http://selenium1py.pythonanywhere.com/"
         page = ProductPage(browser, url)
@@ -125,10 +131,12 @@ class TestUserAddToBasketFromProductPage():
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
-        page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, "Success message is present", 1)
+        page.base_check(page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1),
+                        "Success message is present")
         browser.delete_all_cookies()
         time.sleep(1)
 
+    @pytest.mark.need_review
     def test_user_can_add_product_to_basket(self, browser):
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
@@ -142,7 +150,6 @@ class TestUserAddToBasketFromProductPage():
         productName = prodName.text.strip().lower()
 
         page.add_to_cart()
-        time.sleep(0.1)
         time.sleep(0.1)
         page.should_be_success_message(productName)
         page.should_be_equal_amount_in_cart(productPrice, sumInCart)
