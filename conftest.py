@@ -34,7 +34,7 @@ def browser(request):  # collecting initial options for selenium driver(browser)
     webDriver.maximize_window()
     yield webDriver
 
-    time.sleep(5)
+    time.sleep(1)
     print("Tests ending")
     webDriver.quit()
 

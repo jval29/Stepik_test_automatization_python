@@ -4,6 +4,8 @@ from .locators import ProductPageLocators
 
 
 class ProductPage(BasePage):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def add_to_cart(self):
         addButton = self.wait_element(*ProductPageLocators.ADD_TO_CART_BUTTON)

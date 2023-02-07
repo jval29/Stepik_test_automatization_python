@@ -25,34 +25,42 @@ class BasePage():
         cartLink = self.wait_element(*BasePageLocators.CART_LINK, wait)
         self.move_n_click(cartLink)
 
-    def is_element_present(self, by, locator, wait=1):
+    def is_element_present(self, by, locator, message="Element is not present", wait=1):
         try:
             self.wait_element(by, locator, wait)
+            return True
         except (TimeoutException, NoSuchElementException):
+            print(message)
             return False
-        return True
 
-    def is_not_element_present(self, by, locator, wait=1):
+    def is_not_element_present(self, by, locator, message="Element is still present", wait=1):
         try:
             self.wait_element(by, locator, wait)
             return False
         except (TimeoutException, NoSuchElementException):
+            print(message)
             return True
 
-    def is_disappeared(self, by, selector, wait=1):
+    def is_disappeared(self, by, locator, message="Element is not disappeared", wait=1):
         try:
             WebDriverWait(self.browser, wait, 0.5, TimeoutException).until_not(
-                expCond.presence_of_element_located((by, selector)))
+                expCond.presence_of_element_located((by, locator)))
             return True
         except TimeoutException:
+            print(message)
             return False
 
     def open(self):
         self.browser.get(self.url)
 
     def move_n_click(self, element):
+        self.actChain.reset_actions()
         self.actChain.move_to_element_with_offset(element, 1, 1).pause(0.05).click()
         self.actChain.perform()
+
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+                                                                     " probably unauthorised user"
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
@@ -70,6 +78,12 @@ class BasePage():
             alert.accept()
         except NoAlertPresentException:
             print("\nNo second alert presented")
+
+    def typing(self, text_string):
+        for symbol in text_string:
+            self.actChain.reset_actions()
+            self.actChain.key_down(symbol).pause(0.02).key_up(symbol)
+            self.actChain.perform()
 
     def wait_element(self, by, locator, wait=1):
         element = WebDriverWait(self.browser, wait).until(expCond.presence_of_element_located((by, locator)))
