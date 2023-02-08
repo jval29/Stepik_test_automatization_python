@@ -9,9 +9,12 @@ import math
 
 class BasePage():
 
-    def __init__(self, browser, url, timeout=1):
+    def __init__(self, browser, url=None, timeout=1):
         self.browser = browser
-        self.url = url
+        if url:
+            self.url = url
+        else:
+            self.url = browser.current_url
         self.browser.implicitly_wait(timeout)
         self.actChain = ActionChains(browser)
 
@@ -42,7 +45,7 @@ class BasePage():
 
     def is_disappeared(self, by, locator, timeout=1):
         try:
-            WebDriverWait(self.browser, timeout, 0.5, TimeoutException).until_not(
+            WebDriverWait(self.browser, timeout, 0.5, [TimeoutException]).until_not(
                 expCond.presence_of_element_located((by, locator)))
             return True
         except TimeoutException:

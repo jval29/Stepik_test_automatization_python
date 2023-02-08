@@ -36,7 +36,7 @@ class TestBasketFromMainPage:
         page = MainPage(browser, url)
         page.open()
         page.go_to_basket_page()
-        page = BasketPage(browser, browser.current_url)
+        page = BasketPage(browser)
         page.should_be_basket_url()
         page.basket_should_be_empty()
         page.should_be_empty_basket_message()
