@@ -1,10 +1,14 @@
-from selenium.webdriver.common.by import By
+
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expCond
 from selenium.webdriver import ActionChains
 from .locators import BasePageLocators
+import os
+import json
 import math
+
+authDataPath = fr"{os.path.dirname(__file__)}\log_in_data.json"
 
 
 class BasePage():
@@ -18,7 +22,42 @@ class BasePage():
         self.browser.implicitly_wait(timeout)
         self.actChain = ActionChains(browser)
 
-    def base_check(self, requiredCondition, message="There is no required condition"):
+    def auth_get_data_json(self, email=None, path=authDataPath):
+        with open(path, "r") as fileObject:
+            logInData = json.load(fileObject)
+            if not email:
+                email = list(logInData.keys())[-1]
+            __pwd = logInData[email]
+        return email, __pwd
+
+    def auth_update_data_json(self, email, pwd, path=authDataPath):
+        __pwd, pwd = pwd, None
+        try:
+            with open(path, 'r') as fileObject:
+                data = json.load(fileObject)
+            data[email] = __pwd
+            with open(path, 'w') as fileObject:
+                json.dump(data, fileObject, indent=4, sort_keys=False)
+        except FileNotFoundError:
+            data = {email: __pwd}
+            with open(path, 'w') as fileObject:
+                json.dump(data, fileObject, indent=4, sort_keys=False)
+
+    def auth_remove_single_data_from_json(self, email=None, path=authDataPath):
+        try:
+            with open(path, 'r') as fileObject:
+                data = json.load(fileObject)
+            if email is None:
+                email = list(data.keys())[-1]
+            data.pop(email)
+            with open(path, 'w') as fileObject:
+                json.dump(data, fileObject, indent=4, sort_keys=False)
+        except FileNotFoundError:
+            print("\nFile not found.")
+        except IndexError:
+            print("\nNo keys in the auth_data.")
+
+    def base_check(self, requiredCondition, message="\nThere is no required condition"):
         assert requiredCondition, message
 
     def go_to_login_page(self, timeout=1):
@@ -28,6 +67,10 @@ class BasePage():
     def go_to_basket_page(self, timeout=1):
         cartLink = self.wait_element(*BasePageLocators.CART_LINK, timeout)
         self.move_n_click(cartLink)
+
+    def go_to_user_profile_page(self, timeout=1):
+        userProfileLink = self.wait_element(*BasePageLocators.USER_ICON, timeout)
+        self.move_n_click(userProfileLink)
 
     def is_element_present(self, by, locator, timeout=1):
         try:
@@ -51,20 +94,36 @@ class BasePage():
         except TimeoutException:
             return False
 
-    def open(self):
-        self.browser.get(self.url)
+    def log_off(self):
+        try:
+            self.should_be_authorized_user()
+            logOutLink = self.wait_element(*BasePageLocators.LOG_OUT_LINK)
+            self.move_n_click(logOutLink)
+            assert self.is_not_element_present(*BasePageLocators.USER_ICON), "\nLog off failed"
+        except AssertionError:
+            print("\nTrying to log off from unauthorized session")
 
     def move_n_click(self, element):
         self.actChain.reset_actions()
         self.actChain.move_to_element_with_offset(element, 1, 1).pause(0.05).click()
         self.actChain.perform()
 
+    def open(self):
+        self.browser.get(self.url)
+
     def should_be_authorized_user(self):
-        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "\nUser icon is not presented," \
                                                                      " probably unauthorised user"
+        return True
+
+    def should_not_be_authorized_user(self):
+        assert self.is_not_element_present(*BasePageLocators.USER_ICON), "\nUser icon is presented," \
+                                                                     " probably authorised user"
+        return True
 
     def should_be_login_link(self):
-        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
+        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "\nLogin link is not presented"
+        return True
 
     def solve_quiz_and_get_code(self):
         alert = self.browser.switch_to.alert

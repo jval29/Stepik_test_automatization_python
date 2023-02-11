@@ -1,18 +1,13 @@
+
 import pytest
 from .Pages.product_page import ProductPage, ProductPageLocators
 from .Pages.login_page import LoginPage, LoginPageLocators
 from .Pages.basket_page import BasketPage, BasketPageLocators
-from .Modules.email_generator import f_genemail as generate_email
 import time
 import re
 
 urls = [
     "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
-    # "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
     "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
     pytest.param(
         "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
@@ -32,15 +27,13 @@ def get_product_price_and_cart_amount(page):
 @pytest.mark.usefixtures("browser")
 class TestBasket():
 
-    @pytest.mark.need_review
     @pytest.mark.parametrize("url", urls)
     def test_guest_can_add_product_to_basket(self, browser, url):
         page = ProductPage(browser, url)
         page.open()
 
         productPrice, sumInCart = get_product_price_and_cart_amount(page)
-        prodName = page.wait_element(*ProductPageLocators.PRODUCT_NAME)
-        productName = prodName.text.strip().lower()
+        productName = page.wait_element(*ProductPageLocators.PRODUCT_NAME).text.strip().lower()
 
         page.add_to_cart()
         time.sleep(0.1)
@@ -48,7 +41,6 @@ class TestBasket():
         time.sleep(0.1)
         page.should_be_success_message(productName)
         page.should_be_equal_amount_in_cart(productPrice, sumInCart)
-        browser.delete_all_cookies()
         time.sleep(1)
 
     @pytest.mark.xfail(reason="Should not be passed")
@@ -57,8 +49,7 @@ class TestBasket():
         page = ProductPage(browser, url)
         page.open()
         page.add_to_cart()
-        page.base_check(page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1),
-                        "Success message is still present")
+        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "\nSuccess message is still present"
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -66,20 +57,17 @@ class TestBasket():
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
-        page.base_check(page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1),
-                        "Success message is still present")
+        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "\nSuccess message is still present"
         browser.delete_all_cookies()
         time.sleep(1)
 
-    @pytest.mark.new
     @pytest.mark.xfail(reason="Should not be passed")
     def test_message_disappeared_after_adding_product_to_basket(self, browser):
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
         page.add_to_cart()
-        page.base_check(page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE, 4),
-                        "Success message is not disappeared")
+        assert page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE, 4), "\nSuccess message is not disappeared"
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -92,7 +80,6 @@ class TestLoginFromProductPage():
         page.open()
         page.should_be_login_link()
 
-    @pytest.mark.need_review
     def test_guest_can_go_to_login_page_from_product_page(self, browser):
         url = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
         page = ProductPage(browser, url)
@@ -105,7 +92,6 @@ class TestLoginFromProductPage():
 @pytest.mark.usefixtures("browser")
 class TestBasketFromProductPage():
 
-    @pytest.mark.need_review
     def test_guest_cant_see_product_in_basket_opened_from_product_page(self, browser):
         url = "http://selenium1py.pythonanywhere.com/"
         page = ProductPage(browser, url)
@@ -117,6 +103,7 @@ class TestBasketFromProductPage():
         page.should_be_empty_basket_message()
 
 
+@pytest.mark.new
 @pytest.mark.usefixtures("browser")
 class TestUserAddToBasketFromProductPage():
 
@@ -127,33 +114,31 @@ class TestUserAddToBasketFromProductPage():
         page.open()
         page.go_to_login_page()
         page = LoginPage(browser)
-        email, pwd = generate_email()[0], "q1234q1234"
-        page.register_new_user(email, pwd)
+        # email, pwd = generate_email()[0], "q1234q1234"
+        # page.register_new_user(email, pwd)
+        page.log_in()
         page.should_be_authorized_user()
+        time.sleep(1)
+        yield
+        browser.delete_all_cookies()
+        page.log_off()
         time.sleep(1)
 
     def test_user_cant_see_success_message(self, browser):
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
-        page.base_check(page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1),
-                        "Success message is present")
-        browser.delete_all_cookies()
-        time.sleep(1)
+        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "\nSuccess message is present"
 
-    @pytest.mark.need_review
     def test_user_can_add_product_to_basket(self, browser):
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
 
         productPrice, sumInCart = get_product_price_and_cart_amount(page)
-        prodName = page.wait_element(*ProductPageLocators.PRODUCT_NAME)
-        productName = prodName.text.strip().lower()
+        productName = page.wait_element(*ProductPageLocators.PRODUCT_NAME).text.strip().lower()
 
         page.add_to_cart()
         time.sleep(0.1)
         page.should_be_success_message(productName)
         page.should_be_equal_amount_in_cart(productPrice, sumInCart)
-        browser.delete_all_cookies()
-        time.sleep(1)

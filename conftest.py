@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.options import Options as chromeOptions
 from selenium.webdriver.firefox.options import Options as firefoxOptions
 import time
 import pytest
+from .Pages.base_page import BasePage, BasePageLocators
 
 
 def pytest_addoption(parser):
@@ -35,4 +36,6 @@ def browser(request):  # collecting initial options for selenium driver(browser)
     time.sleep(1)
     print("\nTests ending")
     webDriver.quit()
+
+
 

@@ -1,91 +1,97 @@
+
 """ Use it to generate the E-mail(s)
 To plug as a Module use import like:
-      from email_generator import f_genemail
+      from email_generator import generate_emails
 to obtain generated Email-list call function:
-      f_genemail()
+      generate_emails()
 Call function without parameters to obtain 1 email in list with default options.
 Call function with single number parameter to obtain any quantity You want, like:
-      f_genemail(20)  ---  if You want 20 emails in list
-Call function with all parameters f_genemail(a,'b',c,d,'e','f') where:
-      a - (int) how many emails You need
-      b - (str) special symbols allowed in the <name> , default is '-_'
-      c - (int) minimal <name> length , default is 4
-      d - (int) maximal <name> length, default is 9
-      e - (str) the name of <Domain> if You need fixed, default is '' - to be generated
-      f - (str) the name of <Zone> if You need fixed, default is '' - to be generated
+      generate_emails(20)  ---  if You want 20 emails in list
+Call function with all parameters generate_emails(emailsQuantity: int = 1,
+                                                  allowedSymbols: list = None,
+                                                  minNameLen: int = 4,
+                                                  maxNameLen: int = 9,
+                                                  solidDomain: str = None,
+                                                  solidZone: str = None)
+
 Examples:
-      f_genemail(10,'+-',5,12,'','')
-      f_genemail(50,'',4,8,'mail','com') """
+      generate_emails(10, '+-', 5, 12)
+      generate_emails(50, None, 4, 8, 'mail', 'com') """
+
 
 import random
 
 
-# Main generator function (parameters order: (vQuantity)(liAddSymb)(vMinNameLen)(vMaxNameLen)(vDomain)(vZone))
-def f_genemail(vQuantityF=1, liAddSymbF=None, vMinNameLenF=4, vMaxNameLenF=9, vDomainF='', vZoneF='') -> list:
+# Main generator function
+def generate_emails(emailsQuantity: int = 1, allowedSymbols: list = None,
+                    minNameLen: int = 4, maxNameLen: int = 9,
+                    solidDomain: str = None, solidZone: str = None) -> list:
     # Symbols lists
-    tuVowel = ('a', 'e', 'i', 'o', 'u')
-    tuConsonant = ('b', 'c', 'd', 'f', 'g', 'h', 'k', 'l', 'm', 'n', 'p', 'qu', 'v', 'r', 'w', 'y', 'j', 's', 't', 'x',
+    vowelsList = ('a', 'e', 'i', 'o', 'u')
+    consonantList = ('b', 'c', 'd', 'f', 'g', 'h', 'k', 'l', 'm', 'n', 'p', 'qu', 'v', 'r', 'w', 'y', 'j', 's', 't', 'x',
                    'z', 'th', 'ss', 'ch', 'sh', 'll', 'sc')
-    liZones = ('com', 'org', 'io', 'ru', 'us', 'de', 'fr', 'uk')
-    if liAddSymbF in ('', None):  # Correction of the List that contains Symbols
-        liSymb = ['ight', '-', '_']
+    zonesList = ('com', 'org', 'io', 'ru', 'us', 'de', 'fr', 'uk')
+    if not allowedSymbols:  # Correction of the List that contains Symbols
+        symbolsList = ['ight', '-', '_']
     else:
-        liSymb = ['ight'] + liAddSymbF
+        symbolsList = ['ight'] + allowedSymbols
 
-    liEMails = []  # List to gather generated Emails
+    emailsList = []  # List to gather generated Emails
 
     # Main cycle of generation
-    for vCounter in range(int(vQuantityF)):
+    for emailsCounter in range(int(emailsQuantity)):
 
         # Name Generator
-        vCountNameTotal = random.randint(vMinNameLenF, vMaxNameLenF)
-        vName = ''
-        vChanceVowel, vChanceConsonant, vChanceSymb = -10, +50, -100  # Initial correction of chances to be chosen
-        for vCountName in range(vCountNameTotal):  # Name generation cycle
-            if (random.randint(1, 100) + vChanceVowel) > 70:
-                vName = vName + tuVowel[random.randint(0, len(tuVowel)-1)]
-                vChanceVowel, vChanceConsonant, vChanceSymb = -20, 0, 0
-            elif (random.randint(1, 100) + vChanceConsonant) > 50:
-                vName = vName + tuConsonant[random.randint(0, len(tuConsonant)-1)]
-                vChanceVowel, vChanceConsonant, vChanceSymb = +40, -20, 0
-            elif (random.randint(1, 100) + vChanceSymb) > 60:
-                vName = vName + liSymb[random.randint(0, len(liSymb)-1)]
-                vChanceVowel, vChanceConsonant, vChanceSymb = -10, 0, -100
+        countNameTotal = random.randint(minNameLen, maxNameLen)
+        userName = ''
+        chanceVowel, chanceConsonant, chanceSymbol = -10, +50, -100  # Initial correction of chances to be chosen
+        for vCountName in range(countNameTotal):  # Name generation cycle
+            if (random.randint(1, 100) + chanceVowel) > 70:
+                userName = userName + vowelsList[random.randint(0, len(vowelsList)-1)]
+                chanceVowel, chanceConsonant, chanceSymbol = -20, 0, 0
+            elif (random.randint(1, 100) + chanceConsonant) > 50:
+                userName = userName + consonantList[random.randint(0, len(consonantList)-1)]
+                chanceVowel, chanceConsonant, chanceSymbol = +40, -20, 0
+            elif (random.randint(1, 100) + chanceSymbol) > 60:
+                userName = userName + symbolsList[random.randint(0, len(symbolsList)-1)]
+                chanceVowel, chanceConsonant, chanceSymbol = -10, 0, -100
             else:
-                vName = vName + str(random.randint(0, 9))
-                vChanceVowel, vChanceConsonant, vChanceSymb = -15, -25, -25
-            if len(vName) >= (vCountNameTotal - 2):
-                vChanceSymb = -100
-            if len(vName) >= vCountNameTotal:
+                userName = userName + str(random.randint(0, 9))
+                chanceVowel, chanceConsonant, chanceSymbol = -15, -25, -25
+            if len(userName) >= (countNameTotal - 2):
+                chanceSymbol = -100
+            if len(userName) >= countNameTotal:
+                if len(userName) > maxNameLen:
+                    userName = userName[:maxNameLen]
                 break
 
         # Domain generator
-        if vDomainF == '':
-            vDomainN = ''
-            vCountDomainTotal = random.randint(3, 8)
-            vChanceVowel = -10
-            for vCountDomain in range(vCountDomainTotal):  # Domain generation cycle
-                if (random.randint(1, 100) + vChanceVowel) > 60:
-                    vDomainN = vDomainN + tuVowel[random.randint(0, len(tuVowel)-1)]
-                    vChanceVowel = -20
+        if not solidDomain:
+            generatedDomain = ''
+            countDomainTotal = random.randint(3, 8)
+            chanceVowel = -10
+            for countDomain in range(countDomainTotal):  # Domain generation cycle
+                if (random.randint(1, 100) + chanceVowel) > 60:
+                    generatedDomain = generatedDomain + vowelsList[random.randint(0, len(vowelsList)-1)]
+                    chanceVowel = -20
                 else:
-                    vDomainN = vDomainN + tuConsonant[random.randint(0, len(tuConsonant)-1)]
-                    vChanceVowel = +40
-                if len(vDomainN) >= vCountDomainTotal:
+                    generatedDomain = generatedDomain + consonantList[random.randint(0, len(consonantList)-1)]
+                    chanceVowel = +40
+                if len(generatedDomain) >= countDomainTotal:
                     break
         else:
-            vDomainN = vDomainF
+            generatedDomain = solidDomain
 
         # Zone generator
-        if vZoneF == '':
-            vZoneN = liZones[random.randint(0, len(liZones)-1)]
+        if not solidZone:
+            generatedZone = zonesList[random.randint(0, len(zonesList)-1)]
         else:
-            vZoneN = vZoneF
+            generatedZone = solidZone
 
-        vNewEmail = f'{vName}@{vDomainN}.{vZoneN}'
-        liEMails.append(vNewEmail)
+        newEmail = f'{userName}@{generatedDomain}.{generatedZone}'
+        emailsList.append(newEmail)
     # End of Main cycle of generation
-    return liEMails
+    return emailsList
 # End of Main generator function
 
 
@@ -94,64 +100,62 @@ if __name__ == '__main__':
 
     while True:  # Collecting Parameters for Generation
         while True:  # Quantity of emails
-            vQuantity = input('How many E-mails do You need? (default is "1"): ')
-            if vQuantity == '':
-                vQuantity = '1'
+            reqQuantity = input('How many E-mails do You need? (default is "1"): ')
+            if reqQuantity == '':
+                reqQuantity = '1'
                 print('Quantity used by default (1)')
             try:  # Int check
-                vQuantityInt = int(vQuantity)
-                if vQuantityInt >= 1:
+                quantityInt = int(reqQuantity)
+                if quantityInt >= 1:
                     break
                 print('Enter Positive Number, Please')
             except ValueError:
                 print('Only Numbers, Please')
 
         while True:  # Special sybmols  allowed
-            vAddNewSymb = input('What Special Symbols do You want to allow in the <Name>? (default is "-" and "_"): ')
-            if vAddNewSymb == '':
-                liAddSymb = ['-', '_']
-                print('Special symbols in the <Name> is used by default: ' + str(liAddSymb))
+            incNewSymb = input('What Special Symbols do You want to allow in the <Name>? (default is "-" and "_"): ')
+            if incNewSymb == '':
+                addedSymbols = ['-', '_']
+                print('Special symbols in the <Name> is used by default: ' + str(addedSymbols))
             else:
-                liAddSymb = list(vAddNewSymb)
+                addedSymbols = list(incNewSymb)
             break
 
         while True:  # Minimal Name Length
-            vMinNameLen = input('Enter minimal <Name> Length (default is "4"): ')
-            if vMinNameLen == '':
-                vMinNameLen = '4'
+            reqMinNameLen = input('Enter minimal <Name> Length (default is "4"): ')
+            if reqMinNameLen == '':
+                reqMinNameLen = '4'
                 print('Minimal <Name> Length used by default (4)')
             try:  # Int check
-                vMinNameLenInt = int(vMinNameLen)
-                if 3 <= vMinNameLenInt <= 6:
+                if 3 <= int(reqMinNameLen) <= 6:
                     break
                 print('Enter Number between 3 and 6 , Please')
             except ValueError:
                 print('Only Numbers, Please')
 
         while True:  # Maximal Name Length
-            vMaxNameLen = input('Enter maximal <Name> Length (default is "9"): ')
-            if vMaxNameLen == '':
-                vMaxNameLen = '9'
+            reqMaxNameLen = input('Enter maximal <Name> Length (default is "9"): ')
+            if reqMaxNameLen == '':
+                reqMaxNameLen = '9'
                 print('Maximal <Name> Length used by default (9)')
             try:  # Int check
-                vMaxNameLenInt = int(vMaxNameLen)
-                if 4 <= vMaxNameLenInt <= 20:
+                if 4 <= int(reqMaxNameLen) <= 20:
                     break
                 print('Enter Number between 4 and 20 , Please')
             except ValueError:
                 print('Only Numbers, Please')
 
         while True:  # Add Solid-Domain option
-            vDomain = input(
+            reqDomain = input(
                 'Enter solid <Domain> name or just press Enter on empty field, if You want to randomise <Domain>: ')
-            if 2 <= len(vDomain) <= 12 or vDomain == '':
+            if 2 <= len(reqDomain) <= 12 or reqDomain == '':
                 break
             print('Make sure that <Domain> length is between 2 and 12 characters')
 
         while True:  # Add Solid-Zone option
-            vZone = input(
+            reqZone = input(
                 'Enter solid <Zone> name or just press Enter on empty field, if You want to randomise <Zone>: ')
-            if 2 <= len(vZone) <= 5 or vZone == '':
+            if 2 <= len(reqZone) <= 5 or reqZone == '':
                 break
             print('Make sure that <Zone> length is between 2 and 5 characters')
         break
@@ -159,7 +163,7 @@ if __name__ == '__main__':
 
     while True:
         print('Emails successfully created:')
-        print(f_genemail(int(vQuantity), liAddSymb, int(vMinNameLen), int(vMaxNameLen), vDomain, vZone))
-        vExit = input('Press Enter to Generate again or type "N" to Quit: ').lower()
+        print(generate_emails(int(reqQuantity), addedSymbols, int(reqMinNameLen), int(reqMaxNameLen), reqDomain, reqZone))
+        vExit = input('Press Enter to Generate again or type "N" to Quit: ').lower().strip()
         if vExit in ('n', 'no', 'e', 'exit', 'quit', 'q'):
             break
