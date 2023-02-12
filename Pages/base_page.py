@@ -13,13 +13,14 @@ authDataPath = fr"{os.path.dirname(__file__)}\log_in_data.json"
 
 class BasePage():
 
-    def __init__(self, browser, url=None, timeout=1):
+    def __init__(self, browser, url=None, timeout=None):
         self.browser = browser
         if url:
             self.url = url
         else:
             self.url = browser.current_url
-        self.browser.implicitly_wait(timeout)
+        if timeout:
+            self.browser.implicitly_wait(timeout)
         self.actChain = ActionChains(browser)
 
     def auth_get_data_json(self, email=None, path=authDataPath):
@@ -38,10 +39,12 @@ class BasePage():
             data[email] = __pwd
             with open(path, 'w') as fileObject:
                 json.dump(data, fileObject, indent=4, sort_keys=False)
+                print("\nAuth data was updated")
         except FileNotFoundError:
             data = {email: __pwd}
             with open(path, 'w') as fileObject:
                 json.dump(data, fileObject, indent=4, sort_keys=False)
+                print("\nJson file log_in_data successfully created")
 
     def auth_remove_single_data_from_json(self, email=None, path=authDataPath):
         try:
@@ -62,15 +65,15 @@ class BasePage():
 
     def go_to_login_page(self, timeout=1):
         loginLink = self.wait_element(*BasePageLocators.LOGIN_LINK, timeout)
-        self.move_n_click(loginLink)
+        loginLink.click()
 
     def go_to_basket_page(self, timeout=1):
         cartLink = self.wait_element(*BasePageLocators.CART_LINK, timeout)
-        self.move_n_click(cartLink)
+        cartLink.click()
 
     def go_to_user_profile_page(self, timeout=1):
         userProfileLink = self.wait_element(*BasePageLocators.USER_ICON, timeout)
-        self.move_n_click(userProfileLink)
+        userProfileLink.click()
 
     def is_element_present(self, by, locator, timeout=1):
         try:
@@ -98,7 +101,7 @@ class BasePage():
         try:
             self.should_be_authorized_user()
             logOutLink = self.wait_element(*BasePageLocators.LOG_OUT_LINK)
-            self.move_n_click(logOutLink)
+            logOutLink.click()
             assert self.is_not_element_present(*BasePageLocators.USER_ICON), "\nLog off failed"
         except AssertionError:
             print("\nTrying to log off from unauthorized session")

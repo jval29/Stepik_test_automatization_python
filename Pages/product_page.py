@@ -1,4 +1,5 @@
 
+import time
 import re
 from .base_page import BasePage
 from .locators import ProductPageLocators
@@ -10,7 +11,7 @@ class ProductPage(BasePage):
 
     def add_to_cart(self):
         addButton = self.wait_element(*ProductPageLocators.ADD_TO_CART_BUTTON)
-        self.move_n_click(addButton)
+        addButton.click()
 
     def should_be_success_message(self, productName):
         message = self.wait_element(*ProductPageLocators.SUCCESS_MESSAGE)
@@ -23,6 +24,7 @@ class ProductPage(BasePage):
         return True
 
     def should_be_equal_amount_in_cart(self, productPrice, lastAmount):
+        time.sleep(1)
         cartAmount = self.wait_element(*ProductPageLocators.AMOUNT_IN_CART)
         cartAmount = re.search(r"\d+[.,]\d\d", cartAmount.text)[0]
         newCartAmount = str(round((float(lastAmount) + float(productPrice)), 2))

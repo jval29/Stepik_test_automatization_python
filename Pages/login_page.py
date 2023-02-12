@@ -26,7 +26,7 @@ class LoginPage(BasePage):
         inputPwd = self.wait_element(*LoginPageLocators.INPUT_LOGIN_PWD)
         inputPwd.send_keys(__pwd)
         submitButton = self.wait_element(*LoginPageLocators.BUTTON_SUBMIT_LOGIN)
-        self.move_n_click(submitButton)
+        submitButton.click()
         try:
             assert self.should_be_authorized_user(), "\nUser is still unauthorized"
             return True
@@ -47,7 +47,7 @@ class LoginPage(BasePage):
         inputPwdConfirm = self.wait_element(*LoginPageLocators.INPUT_REGISTER_PWD_CONFIRM)
         inputPwdConfirm.send_keys(__pwd)
         submitButton = self.wait_element(*LoginPageLocators.BUTTON_SUBMIT_REGISTRATION)
-        self.move_n_click(submitButton)
+        submitButton.click()
         try:
             self.should_be_authorized_user()
             print("\nCalling auth data update")

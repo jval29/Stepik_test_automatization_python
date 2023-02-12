@@ -38,10 +38,9 @@ class TestBasket():
         page.add_to_cart()
         time.sleep(0.1)
         page.solve_quiz_and_get_code()
-        time.sleep(0.1)
+        time.sleep(1)
         page.should_be_success_message(productName)
         page.should_be_equal_amount_in_cart(productPrice, sumInCart)
-        time.sleep(1)
 
     @pytest.mark.xfail(reason="Should not be passed")
     def test_guest_cant_see_success_message_after_adding_product_to_basket(self, browser):
@@ -139,6 +138,6 @@ class TestUserAddToBasketFromProductPage():
         productName = page.wait_element(*ProductPageLocators.PRODUCT_NAME).text.strip().lower()
 
         page.add_to_cart()
-        time.sleep(0.1)
+        time.sleep(1)
         page.should_be_success_message(productName)
         page.should_be_equal_amount_in_cart(productPrice, sumInCart)

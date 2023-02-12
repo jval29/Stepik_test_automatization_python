@@ -11,7 +11,7 @@ class BasePageLocators():
 
 class BasketPageLocators():
     BASKET_CONTENT_FORM = (By.CSS_SELECTOR, "form#basket_formset")
-    EMPTY_BASKET_MESSAGE = (By.CSS_SELECTOR, "div#content_inner p:has(a)")
+    EMPTY_BASKET_MESSAGE = (By.CSS_SELECTOR, "div#content_inner p")
 
 
 class MainPageLocators():

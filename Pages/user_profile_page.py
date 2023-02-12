@@ -11,7 +11,7 @@ class UserProfilePage(BasePage):
     def delete_user_profile(self):
         currentEmail = self.wait_element(*UserProfilePageLocators.CURRENT_EMAIL).text.strip()
         deleteButton = self.wait_element(*UserProfilePageLocators.BUTTON_DELETE_PROFILE)
-        self.move_n_click(deleteButton)
+        deleteButton.click()
         inputConfirmPwd = self.wait_element(*UserProfilePageLocators.INPUT_DELETE_PWD_CONFIRM)
         email, __pwd = self.auth_get_data_json(currentEmail)
         inputConfirmPwd.send_keys(__pwd)
