@@ -12,6 +12,9 @@ class BasePageLocators():
 class BasketPageLocators():
     BASKET_CONTENT_FORM = (By.CSS_SELECTOR, "form#basket_formset")
     EMPTY_BASKET_MESSAGE = (By.CSS_SELECTOR, "div#content_inner p")
+    GROUP_BUTTONS_UPDATE_ITEM_QUANTITY = \
+        (By.CSS_SELECTOR, "div.basket-items div.row div.input-group span.input-group-btn button[type='submit']")
+    GROUP_INPUTS_ITEM_QUANTITY = (By.CSS_SELECTOR, "div.basket-items div.row div.input-group input[type='number']")
 
 
 class MainPageLocators():
@@ -22,7 +25,7 @@ class LoginPageLocators():
     LOGIN_FORM = (By.CSS_SELECTOR, "form#login_form")
     INPUT_LOGIN_EMAIL = (By.CSS_SELECTOR, "form#login_form input#id_login-username")
     INPUT_LOGIN_PWD = (By.CSS_SELECTOR, "form#login_form input#id_login-password")
-    BUTTON_SUBMIT_LOGIN =(By.CSS_SELECTOR, "form#login_form button[name='login_submit']")
+    BUTTON_SUBMIT_LOGIN = (By.CSS_SELECTOR, "form#login_form button[name='login_submit']")
     REGISTER_FORM = (By.CSS_SELECTOR, "form#register_form")
     INPUT_REGISTER_EMAIL = (By.CSS_SELECTOR, "form#register_form input#id_registration-email")
     INPUT_REGISTER_PWD = (By.CSS_SELECTOR, "form#register_form input#id_registration-password1")

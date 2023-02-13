@@ -141,3 +141,12 @@ class TestUserAddToBasketFromProductPage():
         time.sleep(1)
         page.should_be_success_message(productName)
         page.should_be_equal_amount_in_cart(productPrice, sumInCart)
+
+    def test_user_can_remove_items_from_basket(self, browser):
+        page = ProductPage(browser)
+        page.go_to_basket_page()
+        page = BasketPage(browser)
+        page.remove_all_items_from_basket()
+        time.sleep(1)
+        browser.refresh()
+        page.basket_should_be_empty()

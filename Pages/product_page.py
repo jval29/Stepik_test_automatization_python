@@ -25,10 +25,11 @@ class ProductPage(BasePage):
 
     def should_be_equal_amount_in_cart(self, productPrice, lastAmount):
         time.sleep(1)
-        cartAmount = self.wait_element(*ProductPageLocators.AMOUNT_IN_CART)
-        cartAmount = re.search(r"\d+[.,]\d\d", cartAmount.text)[0]
-        newCartAmount = str(round((float(lastAmount) + float(productPrice)), 2))
-        assert cartAmount == newCartAmount, \
-            f"\nProduct price + stored cart amount({productPrice}+{lastAmount}={newCartAmount})" \
-            f" and a new cart amount({cartAmount}) doesn't equal"
+        self.check_document_state()
+        actualCartAmount = self.wait_element(*ProductPageLocators.AMOUNT_IN_CART)
+        actualCartAmount = re.search(r"\d+[.,]\d\d", actualCartAmount.text)[0]
+        calcNewCartAmount = str(round((float(lastAmount) + float(productPrice)), 2))
+        assert actualCartAmount == calcNewCartAmount, \
+            f"\nProduct price + last cart amount({productPrice}+{lastAmount}={calcNewCartAmount})" \
+            f" and a new cart amount({actualCartAmount}) doesn't equal"
         return True

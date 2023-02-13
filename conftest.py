@@ -30,7 +30,7 @@ def browser(request):  # collecting initial options for selenium driver(browser)
         options = firefoxOptions()
         options.set_preference("intl.accept_languages", userLanguage)
         webDriver = webdriver.Firefox(options=options)
-        webDriver.implicitly_wait(10)
+        webDriver.implicitly_wait(3)
 
     webDriver.maximize_window()
     yield webDriver

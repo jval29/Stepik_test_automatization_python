@@ -1,3 +1,4 @@
+import time
 
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -63,6 +64,14 @@ class BasePage():
     def base_check(self, requiredCondition, message="\nThere is no required condition"):
         assert requiredCondition, message
 
+    def check_document_state(self, timeLimit=10):
+        for _ in range(timeLimit*2):
+            state = self.browser.execute_script("return document.readyState")
+            if state == "complete":
+                return True
+            time.sleep(0.5)
+            print(f"Browser inactivity counter - {_ // 2} sec")
+
     def go_to_login_page(self, timeout=1):
         loginLink = self.wait_element(*BasePageLocators.LOGIN_LINK, timeout)
         loginLink.click()
@@ -76,6 +85,7 @@ class BasePage():
         userProfileLink.click()
 
     def is_element_present(self, by, locator, timeout=1):
+        self.check_document_state()
         try:
             self.wait_element(by, locator, timeout)
             return True
@@ -83,6 +93,7 @@ class BasePage():
             return False
 
     def is_not_element_present(self, by, locator, timeout=1):
+        self.check_document_state()
         try:
             self.wait_element(by, locator, timeout)
             return False
@@ -90,6 +101,7 @@ class BasePage():
             return True
 
     def is_disappeared(self, by, locator, timeout=1):
+        self.check_document_state()
         try:
             WebDriverWait(self.browser, timeout, 0.5, [TimeoutException]).until_not(
                 expCond.presence_of_element_located((by, locator)))
@@ -115,12 +127,12 @@ class BasePage():
         self.browser.get(self.url)
 
     def should_be_authorized_user(self):
-        assert self.is_element_present(*BasePageLocators.USER_ICON), "\nUser icon is not presented," \
+        assert self.is_element_present(*BasePageLocators.USER_ICON, 6), "\nUser icon is not presented," \
                                                                      " probably unauthorised user"
         return True
 
     def should_not_be_authorized_user(self):
-        assert self.is_not_element_present(*BasePageLocators.USER_ICON), "\nUser icon is presented," \
+        assert self.is_not_element_present(*BasePageLocators.USER_ICON, 6), "\nUser icon is presented," \
                                                                      " probably authorised user"
         return True
 
@@ -148,8 +160,14 @@ class BasePage():
             self.actChain.key_down(symbol).pause(0.02).key_up(symbol)
             self.actChain.perform()
 
-    def wait_element(self, by, locator, timeout=1):
+    def wait_element(self, by, locator, timeout=3):
+        self.check_document_state()
         element = WebDriverWait(self.browser, timeout).until(expCond.presence_of_element_located((by, locator)))
         return element
+
+    def wait_elements(self, by, locator, timeout=3):
+        self.check_document_state()
+        elements = WebDriverWait(self.browser, timeout).until(expCond.presence_of_all_elements_located((by, locator)))
+        return elements
 
 

@@ -22,7 +22,6 @@ class TestRegisterLoginLogoffDeleteUser():
         time.sleep(1)
         page.should_be_authorized_user()
 
-
     def test_log_off(self, browser):
         page = LoginPage(browser, url)
         page.open()
