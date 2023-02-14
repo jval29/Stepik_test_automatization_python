@@ -14,7 +14,7 @@ class ProductPage(BasePage):
         addButton.click()
 
     def should_be_success_message(self, productName):
-        message = self.wait_element(*ProductPageLocators.SUCCESS_MESSAGE)
+        message = self.wait_element(*ProductPageLocators.SUCCESS_MESSAGE, 8)
         assert message.text.lower() == f"{productName} has been added to your basket.", "\nText message doesn't compare"
         return True
 

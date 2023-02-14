@@ -21,11 +21,11 @@ class BasketPage(BasePage):
         except AssertionError:
             input_quantity_locators = self.wait_elements(*BasketPageLocators.GROUP_INPUTS_ITEM_QUANTITY)
             for input_quantity in input_quantity_locators:
-                self.actChain.scroll_to_element(input_quantity)
+                self.actChain.scroll_to_element(input_quantity).perform()
                 input_quantity.clear()
                 input_quantity.send_keys("0")
                 time.sleep(0.1)
-            updateQuantityButton = self.wait_elements(*BasketPageLocators.GROUP_BUTTONS_UPDATE_ITEM_QUANTITY)[0]
+            updateQuantityButton = self.wait_elements(*BasketPageLocators.GROUP_BUTTONS_UPDATE_ITEM_QUANTITY)[-1]
             updateQuantityButton.click()
 
     def should_be_basket_url(self):

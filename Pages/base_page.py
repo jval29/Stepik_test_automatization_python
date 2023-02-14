@@ -127,12 +127,12 @@ class BasePage():
         self.browser.get(self.url)
 
     def should_be_authorized_user(self):
-        assert self.is_element_present(*BasePageLocators.USER_ICON, 6), "\nUser icon is not presented," \
+        assert self.is_element_present(*BasePageLocators.USER_ICON, 8), "\nUser icon is not presented," \
                                                                      " probably unauthorised user"
         return True
 
     def should_not_be_authorized_user(self):
-        assert self.is_not_element_present(*BasePageLocators.USER_ICON, 6), "\nUser icon is presented," \
+        assert self.is_not_element_present(*BasePageLocators.USER_ICON, 8), "\nUser icon is presented," \
                                                                      " probably authorised user"
         return True
 

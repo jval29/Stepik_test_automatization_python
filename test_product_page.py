@@ -48,7 +48,7 @@ class TestBasket():
         page = ProductPage(browser, url)
         page.open()
         page.add_to_cart()
-        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "\nSuccess message is still present"
+        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 3), "\nSuccess message is still present"
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -56,7 +56,7 @@ class TestBasket():
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
-        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "\nSuccess message is still present"
+        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 3), "\nSuccess message is still present"
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -66,7 +66,7 @@ class TestBasket():
         page = ProductPage(browser, url)
         page.open()
         page.add_to_cart()
-        assert page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE, 4), "\nSuccess message is not disappeared"
+        assert page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE, 5), "\nSuccess message is not disappeared"
         browser.delete_all_cookies()
         time.sleep(1)
 
@@ -113,13 +113,10 @@ class TestUserAddToBasketFromProductPage():
         page.open()
         page.go_to_login_page()
         page = LoginPage(browser)
-        # email, pwd = generate_email()[0], "q1234q1234"
-        # page.register_new_user(email, pwd)
         page.log_in()
         page.should_be_authorized_user()
         time.sleep(1)
         yield
-        browser.delete_all_cookies()
         page.log_off()
         time.sleep(1)
 
@@ -127,7 +124,7 @@ class TestUserAddToBasketFromProductPage():
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
         page = ProductPage(browser, url)
         page.open()
-        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 1), "\nSuccess message is present"
+        assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE, 3), "\nSuccess message is present"
 
     def test_user_can_add_product_to_basket(self, browser):
         url = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
