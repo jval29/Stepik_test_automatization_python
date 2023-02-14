@@ -1,6 +1,10 @@
-# Stepik_test_automatization_python
-It is study project in automatization with Python + Selenium + Pytest (template Page Object)
+# Stepik Test Automation with Python
 
-If You have downloaded zip package, make sure before running tests:
-  1. Directory name contains only symbols aviable by Python ("-" not alowed)
-  2. All modules listed in requirements.txt has been installed
+**This is a study project for automation with Python + Selenium + Pytest (using the Page Object template).
+
+<span style="color:red;">Before running the tests, please ensure that:
+1. The directory name contains only symbols available in Python ("-" is not allowed).
+2. All modules listed in requirements.txt have been installed.</span>
+
+You can quickly run tests with .bat files.
+
